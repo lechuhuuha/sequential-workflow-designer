@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Code Generator Page</title>
+</head>
+<body>
+  <h1>List of Files</h1>
+  <ul id="fileList">
+    <!-- Generated list items will be inserted here -->
+  </ul>
+
+  <script>
+    const files = [
+      { name: "code-generator.html", version: "0.10.1. (#36)" },
+      { name: "editing-restrictions.html", version: "0.12.0. (#42)" },
+      { name: "fullscreen.html", version: "0.10.1. (#36)" },
+      { name: "image-filter.html", version: "0.10.1. (#36)" },
+      { name: "light-dark.html", version: "0.10.1. (#36)" },
+      { name: "live-testing.html", version: "0.10.1. (#36)" },
+      { name: "particles.html", version: "0.10.1. (#36)" },
+      { name: "rendering-test.html", version: "0.10.1. (#36)" },
+      { name: "scrollable-page.html", version: "0.10.1. (#36)" },
+      { name: "simple-flow.html", version: "0.10.1. (#36)" },
+      { name: "stress-test.html" }
+    ];
+
+    // Function to generate list items
+    function generateListItems() {
+      const fileList = document.getElementById("fileList");
+
+      files.forEach(file => {
+        const listItem = document.createElement("li");
+        const link = document.createElement("a");
+        const fileText = document.createTextNode(file.name);
+        const versionText = document.createTextNode(file.version || "No version specified");
+
+        link.href = "http://127.0.0.1:5501/examples/" + file.name;
+        link.target = "_blank"; // Open link in a new tab
+        link.appendChild(fileText);
+
+        listItem.appendChild(link);
+        listItem.appendChild(document.createElement("br"));
+        listItem.appendChild(versionText);
+
+        fileList.appendChild(listItem);
+      });
+    }
+
+    // Call the function to generate the list items
+    generateListItems();
+  </script>
+</body>
+</html>

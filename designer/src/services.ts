@@ -12,6 +12,7 @@ import { RectPlaceholderExtension } from './workspace/placeholder/rect-placehold
 import { StartStopRootComponentExtension } from './workspace/start-stop-root/start-stop-root-component-extension';
 import { SwitchStepExtension } from './workspace/switch-step/switch-step-extension';
 import { TaskStepExtension } from './workspace/task-step/task-step-extension';
+import { LargeTaskStepExtension } from './workspace/large-step/large-task-step-extension';
 import { ClassicWheelControllerExtension } from './workspace/viewport/classic-wheel-controller-extension';
 import { DefaultViewportControllerExtension } from './workspace/viewport/default-viewport-controller-extension';
 import { findValidationBadgeIndex } from './workspace/badges/find-validation-badge-index';
@@ -77,6 +78,7 @@ function setDefault(services: Partial<Services>, configuration: DesignerConfigur
 	services.steps.push(ContainerStepExtension.create());
 	services.steps.push(SwitchStepExtension.create());
 	services.steps.push(TaskStepExtension.create());
+	services.steps.push(LargeTaskStepExtension.create());
 
 	if (!services.stepComponentViewWrapper) {
 		services.stepComponentViewWrapper = new DefaultStepComponentViewWrapperExtension();

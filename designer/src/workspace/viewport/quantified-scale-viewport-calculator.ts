@@ -2,7 +2,7 @@ import { Vector } from '../../core';
 import { Viewport } from '../../designer-extension';
 import { NextQuantifiedNumber } from './next-quantified-number';
 
-const SCALES = [0.06, 0.08, 0.1, 0.12, 0.16, 0.2, 0.26, 0.32, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1];
+const SCALES = [0.06, 0.08, 0.1, 0.12, 0.16, 0.2, 0.26, 0.32, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1,1.06, 1.08, 1.1, 1.12, 1.16, 1.2, 1.26, 1.32, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2];
 const MAX_DELTA_Y = 16;
 
 const quantifiedScale = new NextQuantifiedNumber(SCALES);

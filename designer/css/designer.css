@@ -19,18 +19,25 @@
 /* .sqd-toolbox */
 
 .sqd-toolbox, .sqd-toolbox-filter {
-	font-size: 11px;
+	font-size: 14px;
 	line-height: 1.2em;
 }
+
 .sqd-toolbox {
+	--toolbox-width: 200px;
 	position: absolute;
 	top: 10px;
 	left: 10px;
 	z-index: 20;
 	box-sizing: border-box;
 	border-radius: 10px;
-	width: 130px;
+	width: var(--toolbox-width);
 	user-select: none;
+}
+@media (max-width:1200px) {
+	.sqd-toolbox {
+		--toolbox-width: 100px;
+	}
 }
 .sqd-toolbox-header {
 	position: relative;
@@ -68,7 +75,7 @@
 	box-sizing: border-box;
 	padding: 6px 8px;
 	outline: none;
-	width: 110px;
+	width: calc(var(--toolbox-width) - 20px);
 	margin: 0 10px 10px;
 	box-sizing: border-box;
 	border-radius: 10px;
@@ -84,7 +91,7 @@
 	border-radius: 5px;
 	box-sizing: border-box;
 	margin: 0 10px 10px;
-	width: 110px;
+	width: calc(var(--toolbox-width) - 20px);
 	cursor: move;
 }
 .sqd-toolbox-item-icon {
@@ -120,10 +127,10 @@
 /* .sqd-control-bar */
 
 .sqd-control-bar {
-	position: absolute;
+	position: fixed;
 	bottom: 10px;
 	left: 10px;
-	z-index: 20;
+	z-index: 99999;
 	padding: 8px 0 8px 8px;
 	border-radius: 10px;
 	white-space: nowrap;
@@ -257,3 +264,10 @@
 	stroke-dasharray: 3;
 	transition: fill 100ms;
 }
+.sqd-large-task-circle {
+	fill: none;
+	stroke-width: 1;
+  }
+  .sqd-large-task-rect {
+	stroke-width: 1;
+  }

@@ -146,3 +146,16 @@
 .sqd-theme-dark .sqd-validation-error-icon-path {
 	fill: #000;
 }
+
+.sqd-theme-dark .sqd-large-task-rect {
+	fill: #C6C6C6;
+	stroke: none;
+	filter: drop-shadow(0 1.5px 1.5px rgba(0, 0, 0, .15));
+  }
+
+  .sqd-theme-dark .sqd-large-task-circle {
+	stroke: #6A6B70;
+  }
+  .sqd-theme-dark .sqd-large-task-rect.sqd-selected {
+	stroke: #FFF;
+}
