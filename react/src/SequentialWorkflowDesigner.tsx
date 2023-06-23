@@ -1,5 +1,5 @@
 import ReactDOM from 'react-dom/client';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, isValidElement } from 'react';
 import {
 	Definition,
 	ToolboxConfiguration,
@@ -13,7 +13,9 @@ import {
 	CustomActionHandlerContext,
 	CustomAction,
 	Sequence,
-	ValidatorConfiguration
+	ValidatorConfiguration,
+	GlobalEditorProvider,
+	StepEditorProvider
 } from 'sequential-workflow-designer';
 import { GlobalEditorWrapperContext } from './GlobalEditorWrapper';
 import { StepEditorWrapperContext } from './StepEditorWrapper';
@@ -23,6 +25,8 @@ import { SequentialWorkflowDesignerController } from './SequentialWorkflowDesign
 
 const externalEditorClassName = 'sqd-editor-react';
 
+export type ReactToolboxConfiguration = Omit<ToolboxConfiguration, 'isCollapsed'>;
+
 export interface SequentialWorkflowDesignerProps<TDefinition extends Definition> {
 	definition: WrappedDefinition<TDefinition>;
 	onDefinitionChange: (state: WrappedDefinition<TDefinition>) => void;
@@ -30,14 +34,18 @@ export interface SequentialWorkflowDesignerProps<TDefinition extends Definition>
 	onSelectedStepIdChanged?: (stepId: string | null) => void;
 	isReadonly?: boolean;
 
-	globalEditor: false | JSX.Element;
-	stepEditor: false | JSX.Element;
+	globalEditor: false | JSX.Element | GlobalEditorProvider;
+	stepEditor: false | JSX.Element | StepEditorProvider;
+	isEditorCollapsed?: boolean;
+	onIsEditorCollapsedChanged?: (isCollapsed: boolean) => void;
 
 	theme?: string;
 	undoStackSize?: number;
 	stepsConfiguration: StepsConfiguration;
 	validatorConfiguration?: ValidatorConfiguration;
-	toolboxConfiguration: false | ToolboxConfiguration;
+	toolboxConfiguration: false | ReactToolboxConfiguration;
+	isToolboxCollapsed?: boolean;
+	onIsToolboxCollapsedChanged?: (isCollapsed: boolean) => void;
 	/**
 	 * @description If true, the control bar will be displayed.
 	 */
@@ -52,6 +60,8 @@ export function SequentialWorkflowDesigner<TDefinition extends Definition>(props
 
 	const onDefinitionChangeRef = useRef(props.onDefinitionChange);
 	const onSelectedStepIdChangedRef = useRef(props.onSelectedStepIdChanged);
+	const onIsEditorCollapsedChangedRef = useRef(props.onIsEditorCollapsedChanged);
+	const onIsToolboxCollapsedChangedRef = useRef(props.onIsToolboxCollapsedChanged);
 	const globalEditorRef = useRef(props.globalEditor);
 	const stepEditorRef = useRef(props.stepEditor);
 	const controllerRef = useRef(props.controller);
@@ -68,6 +78,8 @@ export function SequentialWorkflowDesigner<TDefinition extends Definition>(props
 	const steps = props.stepsConfiguration;
 	const validator = props.validatorConfiguration;
 	const toolbox = props.toolboxConfiguration;
+	const isEditorCollapsed = props.isEditorCollapsed;
+	const isToolboxCollapsed = props.isToolboxCollapsed;
 	const controlBar = props.controlBar;
 	const extensions = props.extensions;
 
@@ -86,26 +98,32 @@ export function SequentialWorkflowDesigner<TDefinition extends Definition>(props
 		if (!globalEditorRef.current) {
 			throw new Error('Global editor is not provided');
 		}
-		return Presenter.render(
-			externalEditorClassName,
-			editorRootRef,
-			<GlobalEditorWrapperContext definition={def} context={context}>
-				{globalEditorRef.current}
-			</GlobalEditorWrapperContext>
-		);
+		if (isValidElement(globalEditorRef.current)) {
+			return Presenter.render(
+				externalEditorClassName,
+				editorRootRef,
+				<GlobalEditorWrapperContext definition={def} context={context}>
+					{globalEditorRef.current}
+				</GlobalEditorWrapperContext>
+			);
+		}
+		return (globalEditorRef.current as GlobalEditorProvider)(def, context);
 	}
 
 	function stepEditorProvider(step: Step, context: StepEditorContext) {
 		if (!stepEditorRef.current) {
 			throw new Error('Step editor is not provided');
 		}
-		return Presenter.render(
-			externalEditorClassName,
-			editorRootRef,
-			<StepEditorWrapperContext step={step} context={context}>
-				{stepEditorRef.current}
-			</StepEditorWrapperContext>
-		);
+		if (isValidElement(stepEditorRef.current)) {
+			return Presenter.render(
+				externalEditorClassName,
+				editorRootRef,
+				<StepEditorWrapperContext step={step} context={context}>
+					{stepEditorRef.current}
+				</StepEditorWrapperContext>
+			);
+		}
+		return (stepEditorRef.current as StepEditorProvider)(step, context);
 	}
 
 	function customActionHandler(action: CustomAction, step: Step | null, sequence: Sequence, context: CustomActionHandlerContext) {
@@ -134,6 +152,14 @@ export function SequentialWorkflowDesigner<TDefinition extends Definition>(props
 	useEffect(() => {
 		onSelectedStepIdChangedRef.current = props.onSelectedStepIdChanged;
 	}, [props.onSelectedStepIdChanged]);
+
+	useEffect(() => {
+		onIsEditorCollapsedChangedRef.current = props.onIsEditorCollapsedChanged;
+	}, [props.onIsEditorCollapsedChanged]);
+
+	useEffect(() => {
+		onIsToolboxCollapsedChangedRef.current = props.onIsToolboxCollapsedChanged;
+	}, [props.onIsToolboxCollapsedChanged]);
 
 	useEffect(() => {
 		globalEditorRef.current = props.globalEditor;
@@ -166,7 +192,15 @@ export function SequentialWorkflowDesigner<TDefinition extends Definition>(props
 
 				if (isReadonly !== undefined && isReadonly !== designerRef.current.isReadonly()) {
 					designerRef.current.setIsReadonly(isReadonly);
-					// console.log('sqd: readonly updated');
+					// console.log('sqd: isReadonly updated');
+				}
+				if (isToolboxCollapsed !== undefined && isToolboxCollapsed !== designerRef.current.isToolboxCollapsed()) {
+					designerRef.current.setIsToolboxCollapsed(isToolboxCollapsed);
+					// console.log('sqd: isToolboxCollapsed updated');
+				}
+				if (isEditorCollapsed !== undefined && isEditorCollapsed !== designerRef.current.isEditorCollapsed()) {
+					designerRef.current.setIsEditorCollapsed(isEditorCollapsed);
+					// console.log('sqd: isEditorCollapsed updated');
 				}
 				return;
 			}
@@ -177,13 +211,19 @@ export function SequentialWorkflowDesigner<TDefinition extends Definition>(props
 		const designer = Designer.create(placeholder, definition.value, {
 			theme,
 			undoStackSize,
-			toolbox,
+			toolbox: toolbox
+				? {
+						...toolbox,
+						isCollapsed: isToolboxCollapsed
+				  }
+				: false,
 			steps,
 			validator,
 			controlBar,
 			editors:
 				globalEditorRef.current && stepEditorRef.current
 					? {
+							isCollapsed: isEditorCollapsed,
 							globalEditorProvider,
 							stepEditorProvider
 					  }
@@ -210,9 +250,33 @@ export function SequentialWorkflowDesigner<TDefinition extends Definition>(props
 				onSelectedStepIdChangedRef.current(stepId);
 			}
 		});
+		designer.onIsToolboxCollapsedChanged.subscribe(isCollapsed => {
+			if (onIsToolboxCollapsedChangedRef.current) {
+				onIsToolboxCollapsedChangedRef.current(isCollapsed);
+			}
+		});
+		designer.onIsEditorCollapsedChanged.subscribe(isCollapsed => {
+			if (onIsEditorCollapsedChangedRef.current) {
+				onIsEditorCollapsedChangedRef.current(isCollapsed);
+			}
+		});
 
 		designerRef.current = designer;
-	}, [placeholder, definition, selectedStepId, isReadonly, theme, undoStackSize, toolbox, controlBar, steps, validator, extensions]);
+	}, [
+		placeholder,
+		definition,
+		selectedStepId,
+		isReadonly,
+		theme,
+		undoStackSize,
+		toolbox,
+		isToolboxCollapsed,
+		isEditorCollapsed,
+		controlBar,
+		steps,
+		validator,
+		extensions
+	]);
 
 	useEffect(() => {
 		return tryDestroy;
