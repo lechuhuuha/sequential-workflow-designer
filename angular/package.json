@@ -4,7 +4,7 @@
 	"scripts": {
 		"ng": "ng",
 		"start": "ng serve",
-		"build": "rm -rf designer-dist && ng build && cp ../LICENSE designer-dist/LICENSE",
+		"build": "echo",
 		"watch": "ng build --watch --configuration development",
 		"prettier": "prettier --check ./designer/src",
 		"prettier:fix": "prettier --write ./designer/src",

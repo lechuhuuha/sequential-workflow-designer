@@ -7,8 +7,20 @@ import { ServicesResolver } from '../services';
 
 export function getEditorsConfigurationStub(): EditorsConfiguration {
 	return {
-		globalEditorProvider: () => document.createElement('div'),
-		stepEditorProvider: () => document.createElement('div')
+		globalEditorProvider: (): [HTMLElement, () => void] => {
+			const element = document.createElement('div');
+			const callback = () => {
+			  // Callback implementation
+			};
+			return [element, callback];
+		  },
+		stepEditorProvider: (): [HTMLElement, () => void] => {
+			const element = document.createElement('div');
+			const callback = () => {
+			  // Callback implementation
+			};
+			return [element, callback];
+		  },
 	};
 }
 

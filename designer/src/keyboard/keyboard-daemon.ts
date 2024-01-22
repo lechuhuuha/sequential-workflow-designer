@@ -27,7 +27,7 @@ export class KeyboardDaemon implements Daemon {
 			e.preventDefault();
 			e.stopPropagation();
 
-			this.controlBarApi.tryDelete();
+			// this.controlBarApi.tryDelete();
 		}
 	};
 

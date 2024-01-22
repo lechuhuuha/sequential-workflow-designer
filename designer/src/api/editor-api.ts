@@ -37,6 +37,7 @@ export class EditorApi {
 			throw new Error('Step id is empty');
 		}
 		return {
+			stepId : stepId,
 			notifyPropertiesChanged: () => {
 				this.state.notifyDefinitionChanged(DefinitionChangeType.stepPropertyChanged, stepId);
 			},

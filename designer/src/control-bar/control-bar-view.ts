@@ -33,7 +33,7 @@ export class ControlBarView {
 		const deleteButton = createButton(Icons.delete, 'Delete selected step');
 		deleteButton.classList.add('sqd-delete');
 		deleteButton.classList.add('sqd-hidden');
-		root.appendChild(deleteButton);
+		// root.appendChild(deleteButton);
 
 		parent.appendChild(root);
 		return new ControlBarView(resetButton, zoomInButton, zoomOutButton, undoButton, redoButton, disableDragButton, deleteButton);
@@ -80,7 +80,7 @@ export class ControlBarView {
 	}
 
 	public bindDeleteButtonClick(handler: () => void) {
-		bindClick(this.deleteButton, handler);
+		// bindClick(this.deleteButton, handler);
 	}
 
 	public setIsDeleteButtonHidden(isHidden: boolean) {

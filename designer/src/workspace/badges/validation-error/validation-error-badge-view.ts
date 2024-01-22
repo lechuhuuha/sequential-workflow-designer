@@ -4,14 +4,19 @@ import { BadgeView } from '../../component';
 import { ValidationErrorBadgeViewConfiguration } from './validation-error-badge-view-configuration';
 
 export class ValidationErrorBadgeView implements BadgeView {
-	public static create(parent: SVGElement, cfg: ValidationErrorBadgeViewConfiguration): ValidationErrorBadgeView {
+	public static create(parent: SVGElement, cfg: ValidationErrorBadgeViewConfiguration, erroMsg: string | null): ValidationErrorBadgeView {
 		const g = Dom.svg('g');
 
 		const halfOfSize = cfg.size / 2;
-		const circle = Dom.svg('path', {
-			class: 'sqd-validation-error',
-			d: `M 0 ${-halfOfSize} l ${halfOfSize} ${cfg.size} l ${-cfg.size} 0 Z`
-		});
+		const circleOptions = {
+			class: 'sqd-validation-error enabled',
+			d: `M 0 ${-halfOfSize} l ${halfOfSize} ${cfg.size} l ${-cfg.size} 0 Z`,
+			errorMsg: ''
+		};
+		if (erroMsg) {
+			circleOptions.errorMsg = erroMsg;
+		}
+		const circle = Dom.svg('path', circleOptions);
 		Dom.translate(circle, halfOfSize, halfOfSize);
 		g.appendChild(circle);
 
@@ -29,7 +34,7 @@ export class ValidationErrorBadgeView implements BadgeView {
 		public readonly g: SVGGElement,
 		public readonly width: number,
 		public readonly height: number
-	) {}
+	) { }
 
 	public destroy() {
 		this.parent.removeChild(this.g);

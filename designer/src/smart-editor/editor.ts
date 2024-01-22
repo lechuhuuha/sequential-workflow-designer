@@ -18,16 +18,21 @@ export class Editor {
 		function render(step: Step | null) {
 			let content: HTMLElement;
 			let className: string;
+			let callBack: (() => void) | undefined;
 			if (step) {
 				const stepContext = api.editor.createStepEditorContext(step.id);
-				content = stepEditorProvider(step, stepContext);
+				[content,callBack] = stepEditorProvider(step, stepContext);
 				className = stepEditorClassName;
 			} else {
 				const globalContext = api.editor.createGlobalEditorContext();
-				content = globalEditorProvider(api.editor.getDefinition(), globalContext);
+				[content,callBack] = globalEditorProvider(api.editor.getDefinition(), globalContext);
 				className = globalEditorClassName;
 			}
 			view.setContent(content, className);
+			// Check if the callBack is defined and callable, then invoke it
+			if (typeof callBack === 'function') {
+				callBack();
+			}
 		}
 
 		const renderer = api.editor.runRenderer(step => render(step));

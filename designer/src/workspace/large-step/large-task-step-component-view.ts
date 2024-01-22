@@ -7,7 +7,17 @@ import { OutputView } from '../common-views/output-view';
 import { StepComponentView } from '../component';
 import { LargeTaskStepComponentViewConfiguration } from './large-task-step-component-view-configuration';
 
-const Pe = (t: Step) => `Task type: ${t.type}`;
+const Pe = (t: Step) => {
+
+	let type = t.properties.type != null ? String(t.properties.type).toUpperCase() : null;
+	return type;
+}
+
+const crop = (text: SVGTextElement, maxSize: number) => {
+	while (text.getComputedTextLength() > maxSize) {
+		text.textContent = text.textContent?.slice(0, -4)?.trim() + "...";
+	}
+};
 
 export const createLargeTaskStepComponentViewFactory =
 	(cfg: LargeTaskStepComponentViewConfiguration): StepComponentViewFactory =>
@@ -25,7 +35,7 @@ export const createLargeTaskStepComponentViewFactory =
 					y: cfg.nameY,
 				});
 			(d.textContent = stepContext.step.name), r.appendChild(d);
-
+			crop(d, 220 - 70); // Crop the text content
 			const l = d.getBBox(),
 				c = Dom.svg("text", {
 					class: "sqd-large-task-description-text",

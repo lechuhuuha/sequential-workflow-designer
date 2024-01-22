@@ -6,8 +6,10 @@ describe('ValidationErrorBadgeView', () => {
 		const parent = Dom.svg('svg');
 		ValidationErrorBadgeView.create(parent, {
 			size: 20,
-			iconSize: 10
-		});
+			iconSize: 10,
+
+		},
+			null);
 
 		expect(parent.children.length).toEqual(1);
 	});

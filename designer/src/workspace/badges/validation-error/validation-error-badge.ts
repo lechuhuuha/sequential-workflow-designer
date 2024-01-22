@@ -28,20 +28,25 @@ export class ValidationErrorBadge implements Badge {
 
 	private constructor(
 		private readonly parentElement: SVGElement,
-		private readonly validator: () => boolean,
+		private readonly validator: () => boolean | string,
 		private readonly configuration: ValidationErrorBadgeViewConfiguration
-	) {}
+	) { }
 
 	public update(result: unknown): unknown {
 		const isValid = this.validator();
 
-		if (isValid) {
-			if (this.view) {
-				this.view.destroy();
-				this.view = null;
+		if (typeof isValid === "string") {
+			this.view = ValidationErrorBadgeView.create(this.parentElement, this.configuration, isValid);
+			return false;
+		} else if (typeof isValid === "boolean") {
+			if (isValid) {
+				if (this.view) {
+					this.view.destroy();
+					this.view = null;
+				}
+			} else if (!this.view) {
+				this.view = ValidationErrorBadgeView.create(this.parentElement, this.configuration, null);
 			}
-		} else if (!this.view) {
-			this.view = ValidationErrorBadgeView.create(this.parentElement, this.configuration);
 		}
 
 		return isValid && result;

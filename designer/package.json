@@ -49,7 +49,7 @@
 		"clean": "rm -rf lib && rm -rf build && rm -rf dist && rm -rf node_modules/.cache/rollup-plugin-typescript2",
 		"start": "rollup -c --watch",
 		"start:clean": "yarn clean && npm run start",
-		"build": "yarn clean && rollup -c",
+		"build": "yarn clean && rollup -c && cd .. && php buildjs.php",
 		"test": "karma start karma.conf.cjs",
 		"test:single": "karma start karma.conf.cjs --single-run",
 		"eslint": "eslint ./src --ext .ts",

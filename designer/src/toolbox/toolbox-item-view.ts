@@ -30,8 +30,14 @@ export class ToolboxItemView {
 		});
 		text.textContent = api.getLabel(step);
 
+		const desc = Dom.element('div', {
+			class: 'sqd-toolbox-item-desc'
+		});
+		desc.textContent = step.properties.desc != null ? String(step.properties.desc) : null;
+		
 		root.appendChild(icon);
 		root.appendChild(text);
+		root.appendChild(desc);
 		parent.appendChild(root);
 		return new ToolboxItemView(root);
 	}

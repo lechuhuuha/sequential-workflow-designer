@@ -147,12 +147,13 @@ export interface EditorsConfiguration<TDefinition extends Definition = Definitio
 }
 
 export interface StepEditorContext {
+	stepId : string,
 	notifyNameChanged(): void;
 	notifyPropertiesChanged(): void;
 	notifyChildrenChanged(): void;
 }
 
-export type StepEditorProvider = (step: Step, context: StepEditorContext) => HTMLElement;
+export type StepEditorProvider = (step: Step, context: StepEditorContext) => [HTMLElement, () => void];
 
 export interface GlobalEditorContext {
 	notifyPropertiesChanged(): void;
@@ -161,4 +162,4 @@ export interface GlobalEditorContext {
 export type GlobalEditorProvider<TDefinition extends Definition = Definition> = (
 	definition: TDefinition,
 	context: GlobalEditorContext
-) => HTMLElement;
+) => [HTMLElement, () => void];
