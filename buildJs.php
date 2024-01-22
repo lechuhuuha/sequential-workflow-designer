@@ -1,16 +1,18 @@
 <?php
-// Function to Copy folders and files       
+
+// Function to Copy folders and files
 
 function rrmdir($dir)
 {
     if (is_dir($dir)) {
         $objects = scandir($dir);
         foreach ($objects as $object) {
-            if ($object != "." && $object != "..") {
-                if (is_dir($dir . DIRECTORY_SEPARATOR . $object) && !is_link($dir . "/" . $object))
+            if ($object != '.' && $object != '..') {
+                if (is_dir($dir . DIRECTORY_SEPARATOR . $object) && !is_link($dir . '/' . $object)) {
                     rrmdir($dir . DIRECTORY_SEPARATOR . $object);
-                else
+                } else {
                     unlink($dir . DIRECTORY_SEPARATOR . $object);
+                }
             }
         }
         rmdir($dir);
@@ -64,22 +66,21 @@ function recurseCopy(
     closedir($directory);
 }
 
+$currentDir = __DIR__;
 $foldersNeedToCopy = [
-    'D:\repo_from_github\sequential-workflow-designer\automation-flow-builder\assets',
-    'D:\repo_from_github\sequential-workflow-designer\designer\dist',
-    // 'D:\repo_from_github\sequential-workflow-designer\designer\css'
+    $currentDir . '\automation-flow-builder\assets',
+    $currentDir . '\designer\dist',
+    $currentDir . '\css',
 ];
 
-$rootCopyDir = 'D:\forNewEma\ema\base\public\automation-flow-builder\\';
+$rootCopyDir = $currentDir . '\automation-flow-builder\\';
 foreach ($foldersNeedToCopy as $folder) {
 
     $lastFolder = basename($folder);
     echo $lastFolder . PHP_EOL;
     if (is_dir($folder)) {
-        recurseCopy($folder, 'D:\forNewEma\ema\base\public\automation-flow-builder', $lastFolder);
+        recurseCopy($folder, $currentDir . '\automation-flow-builder', $lastFolder);
     } else {
         copy($folder, $rootCopyDir . $lastFolder);
     }
 }
-
-// test pull
