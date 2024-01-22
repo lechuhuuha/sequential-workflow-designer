@@ -81,3 +81,5 @@ foreach ($foldersNeedToCopy as $folder) {
         copy($folder, $rootCopyDir . $lastFolder);
     }
 }
+
+// test pull
