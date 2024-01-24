@@ -1,7 +1,7 @@
 {
 	"private": true,
 	"scripts": {
-		"build": "yarn workspaces run build && php buildJs.php",
+		"build": "yarn workspaces run build",
 		"test:single": "yarn workspaces run test:single",
 		"eslint": "yarn workspaces run eslint",
 		"prettier": "yarn workspaces run prettier",
