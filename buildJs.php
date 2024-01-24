@@ -68,18 +68,18 @@ function recurseCopy(
 
 $currentDir = __DIR__;
 $foldersNeedToCopy = [
-    $currentDir . '\automation-flow-builder\assets',
-    $currentDir . '\designer\dist',
-    $currentDir . '\css',
+    $currentDir . '/assets',
+    $currentDir . '/designer/dist',
+    $currentDir . '/css',
 ];
 
-$rootCopyDir = $currentDir . '\automation-flow-builder\\';
+$rootCopyDir = $currentDir . '/automation-flow-builder/';
 foreach ($foldersNeedToCopy as $folder) {
 
     $lastFolder = basename($folder);
     echo $lastFolder . PHP_EOL;
     if (is_dir($folder)) {
-        recurseCopy($folder, $currentDir . '\automation-flow-builder', $lastFolder);
+        recurseCopy($folder, $currentDir . '/automation-flow-builder/', $lastFolder);
     } else {
         copy($folder, $rootCopyDir . $lastFolder);
     }
